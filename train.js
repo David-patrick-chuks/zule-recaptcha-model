@@ -4,6 +4,7 @@ const path = require('path');
 const { createCanvas, loadImage } = require('canvas');
 
 const IMAGE_SIZE = 128;
+const CLASSIFICATION_THRESHOLD = 0.6; // 📉 Adjusted threshold
 
 // Load images from a folder
 async function loadImagesFromDir(dirPath, label) {
@@ -23,7 +24,7 @@ async function loadImagesFromDir(dirPath, label) {
         .toFloat()
         .div(tf.scalar(255.0))
         .reshape([IMAGE_SIZE, IMAGE_SIZE, 3]);
-      images.push({ tensor: imageTensor, label });
+      images.push({ tensor: imageTensor, label, file });
       console.log(`✅ Loaded ${imgPath}`);
     } catch (err) {
       console.error(`❌ Failed to load ${imgPath}: ${err.message}`);
@@ -45,7 +46,7 @@ async function loadDataset() {
   const ys = tf.tensor(all.map(i => i.label)).reshape([all.length, 1]);
 
   console.log('✅ Dataset tensors prepared.');
-  return { xs, ys };
+  return { xs, ys, samples: all };
 }
 
 function createModel() {
@@ -61,7 +62,9 @@ function createModel() {
   model.add(tf.layers.conv2d({ filters: 32, kernelSize: 3, activation: 'relu' }));
   model.add(tf.layers.maxPooling2d({ poolSize: 2 }));
   model.add(tf.layers.flatten());
+  model.add(tf.layers.dropout({ rate: 0.3 })); // 💧 Dropout layer
   model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
+  model.add(tf.layers.dropout({ rate: 0.2 }));
   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
   model.compile({
@@ -74,23 +77,42 @@ function createModel() {
   return model;
 }
 
+async function evaluateModel(model, samples) {
+  console.log('\n🧠 Evaluating model on training samples:');
+  for (const sample of samples) {
+    const input = sample.tensor.reshape([1, IMAGE_SIZE, IMAGE_SIZE, 3]);
+    const prediction = model.predict(input);
+    const score = (await prediction.data())[0];
+
+    const expected = sample.label === 1 ? 'CORRECT' : 'INCORRECT';
+    const predicted = score >= CLASSIFICATION_THRESHOLD ? 'CORRECT ✅' : 'INCORRECT ❌';
+
+    console.log(`📷 ${sample.file}: score=${score.toFixed(4)} → expected=${expected} → predicted=${predicted}`);
+
+    input.dispose();
+    prediction.dispose();
+  }
+}
+
 (async () => {
-  const { xs, ys } = await loadDataset();
+  const { xs, ys, samples } = await loadDataset();
   const model = createModel();
 
   console.log('🚀 Starting training...');
   await model.fit(xs, ys, {
-    epochs: 2,
-    batchSize: 8,
+    epochs: 20, // ⏱️ Train longer
+    batchSize: 4,
     validationSplit: 0.2,
     callbacks: {
       onEpochEnd: (epoch, logs) => {
-        console.log(`📈 Epoch ${epoch + 1}: loss=${logs.loss.toFixed(4)} accuracy=${logs.acc.toFixed(4)}`);
+        console.log(`📈 Epoch ${epoch + 1}: loss=${logs.loss.toFixed(4)}, acc=${logs.acc.toFixed(4)}, val_acc=${logs.val_acc?.toFixed(4)}`);
       }
     }
   });
 
-  // Manual model saving since 'file://' is not supported in tfjs (browser version)
+  await evaluateModel(model, samples); // 🧠 Evaluate on same set (for now)
+
+  // Manual model saving
   const saveResult = await model.save(tf.io.withSaveHandler(async (data) => {
     const modelJson = JSON.stringify({
       modelTopology: data.modelTopology,
@@ -106,6 +128,12 @@ function createModel() {
     fs.writeFileSync('./model/weights.bin', Buffer.from(weightData));
 
     console.log('✅ Model saved manually to ./model');
-    return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON', weightDataBytes: weightData.byteLength } };
+    return {
+      modelArtifactsInfo: {
+        dateSaved: new Date(),
+        modelTopologyType: 'JSON',
+        weightDataBytes: weightData.byteLength
+      }
+    };
   }));
 })();

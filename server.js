@@ -3,14 +3,15 @@ const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors");
 const { createCanvas, loadImage } = require("canvas");
 
 const IMAGE_SIZE = 128;
 const PORT = 8080;
 
 const app = express();
-const upload = multer({ dest: "uploads/" });
 app.use(cors());
+const upload = multer({ dest: "uploads/" });
 
 let model;
 
