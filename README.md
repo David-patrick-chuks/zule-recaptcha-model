@@ -1,3 +1,9 @@
+<picture>
+  <img alt="ZULE AI Banner" src="public/zule-banner.png" width="100%">
+</picture>
+
+<br />
+
 # ZULE AI - reCAPTCHA Classification Model
 
 Welcome to the ZULE AI reCAPTCHA Screenshot Classification Model, a core component of the ZULE AI project. ZULE AI is the first AI ghost that automates Twitter (X) logins like a human, bypassing security measures and solving reCAPTCHAs silently. This repository contains a TensorFlow.js-based convolutional neural network (CNN) designed to classify Twitter reCAPTCHA seating arrangement screenshots as "correct" or "incorrect," ensuring ZULE AI's automation can validate successful solutions to challenges like "move the person to the indicated seat."
