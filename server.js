@@ -18,6 +18,11 @@ let model;
 // Serve model directory statically
 app.use("/model", express.static(path.join(__dirname, "model")));
 
+// Add ping route
+app.get("/ping", (req, res) => {
+  res.json({ status: "ok", message: "Server is running" });
+});
+
 /**
  * Convert uploaded image to a Tensor suitable for model input
  */
