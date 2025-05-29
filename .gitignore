@@ -1,5 +1,5 @@
 node_modules
 data
 uploads
-# train.js
+train.js
 train_image_classifier.js
