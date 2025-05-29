@@ -175,10 +175,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## About ZULE AI
 ZULE AI is the first AI ghost that hacks Twitter like a human, automating logins, bypassing reCAPTCHA, and providing visual proof of access. Powered by blockchain and advanced human mimicry technology, ZULE AI operates seamlessly across web, Windows, and macOS platforms.
 
-- **Website**: [zulezi.xyz](https://zulezi.xyz)
+- **Website**: [zulezi.xyz](https://www.zuleai.xyz)
 - **Email**: [support@zuleai.xyz](mailto:support@zuleai.xyz)
-- **Twitter**: Follow us on [Twitter](https://twitter.com/zuleai)
-- **Telegram**: Join our [Telegram Community](https://t.me/zuleai)
+- **Twitter**: Follow us on [Twitter](https://twitter.com/zule-ai)
+- **Telegram**: Join our [Telegram Community](https://t.me/ZuleAicommunitiy)
 - **GitHub**: [ZULE AI Organization](https://github.com/zule-ai)
 
 ## Acknowledgments
@@ -188,6 +188,6 @@ ZULE AI is the first AI ghost that hacks Twitter like a human, automating logins
 - Inspired by the ZULE AI mission to push the boundaries of AI automation.
 
 ## Stay Updated
-Subscribe to our newsletter at [zulezi.xyz](#) for updates on ZULE AI and this project.
+Subscribe to our newsletter at [zulezi.xyz](https://www.zuleai.xyz/) for updates on ZULE AI and this project.
 
 © 2025 ZULE AI. All rights reserved.
