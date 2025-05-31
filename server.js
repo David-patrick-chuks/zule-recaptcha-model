@@ -102,4 +102,8 @@ app.post("/predict", upload.single("image"), async (req, res) => {
   }
 });
 
+app.get("/ping", async (req, res) => {
+  res.status(200).json({ message: "ZULE to the fucking moon 🌕" });
+});
+
 startServer();
